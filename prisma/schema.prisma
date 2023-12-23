@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int       @id @default(autoincrement())
+  name     String
+  username String    @unique
+  email    String    @unique
+  password String
+  phone    String
+  address  Address[]
+  order    Order[]
+}
+
+model Address {
+  id       Int    @id @default(autoincrement())
+  user     User   @relation(fields: [userId], references: [id])
+  userId   Int
+  location String
+  state    String
+  city     String
+  pincode  Int
+}
+
+model Restaurant {
+  id                 Int    @id @default(autoincrement())
+  restaurant_name    String
+  restaurant_address String
+  restaurant_phone   String
+  location           String
+  state              String
+  city               String
+  pincode            Int
+  menu               Menu[]
+}
+
+model Menu {
+  id               Int           @id @default(autoincrement())
+  restaurant       Restaurant    @relation(fields: [restaurantId], references: [id])
+  restaurantId     Int
+  menu_name        String
+  menu_img         String
+  menu_rating      Int
+  menu_price       Decimal?      @db.Decimal(10, 2)
+  menu_description String
+  MenuCategory     MenuCategory? @relation(fields: [menuCategoryId], references: [id])
+  menuCategoryId   Int?
+}
+
+model MenuCategory {
+  id            Int    @id @default(autoincrement())
+  category_name String
+  menu          Menu[]
+}
+
+model Order {
+  id              Int             @id @default(autoincrement())
+  user            User            @relation(fields: [userId], references: [id])
+  userId          Int
+  order_total     Decimal?        @db.Decimal(10, 2)
+  delivery_status DELIVERY_STATUS
+  payment_id      Int
+  Payment         Payment?
+  order_type      ORDER_TYPE
+}
+
+model Payment {
+  payment_id     Int            @id @default(autoincrement())
+  order_id       Int            @unique
+  payment_status PAYMENT_STATUS
+  order          Order          @relation(fields: [order_id], references: [id])
+}
+
+enum PAYMENT_STATUS {
+  SUCCESS
+  FAILED
+  PROCESSING
+}
+
+enum DELIVERY_STATUS {
+  PENDING
+  CONFIRMED
+  PREPARING
+  OUT_FOR_DELIVERY
+  DELAYED
+  DELIVERED
+  CANCEL
+  RETURNED
+  ON_HOLD
+  COMPLETED
+}
+
+enum ORDER_TYPE {
+  CASH_ON_DELIVERY
+  ONLINE
+}

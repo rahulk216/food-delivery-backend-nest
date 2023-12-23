@@ -1,0 +1,10 @@
+version: '3'
+services:
+  db:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: testdb_2h7j_user
+      POSTGRES_PASSWORD: GMeBGJFccPrlsVFeI5mNQpHYB1sFaPbo
+      POSTGRES_DB: testdb_2h7j
