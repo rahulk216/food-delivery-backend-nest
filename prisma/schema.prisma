@@ -52,8 +52,10 @@ model Menu {
   menu_rating      Int
   menu_price       Decimal?      @db.Decimal(10, 2)
   menu_description String
-  MenuCategory     MenuCategory? @relation(fields: [menuCategoryId], references: [id])
+  menuCategory     MenuCategory? @relation(fields: [menuCategoryId], references: [id])
   menuCategoryId   Int?
+  isVeg            Boolean
+  topItem          Boolean
 }
 
 model MenuCategory {
