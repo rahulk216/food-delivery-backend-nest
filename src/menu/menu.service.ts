@@ -79,7 +79,8 @@ export class MenuService {
         menuCategory: true,
       },
     });
-    if (menus) return menus;
+    if (!menus) throw new NotFoundException('');
+    return menus;
   }
 
   async deleteMenu(id): Promise<any> {

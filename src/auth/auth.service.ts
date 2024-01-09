@@ -32,7 +32,11 @@ export class AuthService {
     if (!body.token) throw new NotFoundException();
     const user = this.jwtService.decode(body.token);
     if (!user) throw new NotFoundException();
-    return user?.sub?.user;
+    const { password, ...result } = await this.prismaService.user.findUnique({
+      where: { username: user.sub.user.username },
+      include: { address: true },
+    });
+    return result;
   }
 
   async validateUser(username: string, password: string) {
