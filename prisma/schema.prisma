@@ -53,6 +53,8 @@ model Menu {
   menu_price       Decimal?      @db.Decimal(10, 2)
   menu_description String
   menuCategory     MenuCategory? @relation(fields: [menuCategoryId], references: [id])
+  order_id         Int?
+  orders           Order?        @relation(fields: [order_id], references: [id])
   menuCategoryId   Int?
   isVeg            Boolean
   topItem          Boolean
@@ -70,8 +72,9 @@ model Order {
   userId          Int
   order_total     Decimal?        @db.Decimal(10, 2)
   delivery_status DELIVERY_STATUS
+  order_items     Menu[]
   payment_id      Int
-  Payment         Payment?
+  payment         Payment?
   order_type      ORDER_TYPE
 }
 
