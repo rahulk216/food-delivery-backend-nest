@@ -7,6 +7,8 @@ import {
   Body,
   Param,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { MenuService } from './menu.service';
 import {
@@ -16,6 +18,8 @@ import {
   updateMenuDto,
 } from './dtos/menu.dtos';
 import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller('menu')
 export class MenuController {
@@ -23,9 +27,13 @@ export class MenuController {
 
   // Menu controllers
   @UseGuards(JwtGuard)
+  @UseInterceptors(FileInterceptor('file'))
   @Post('/')
-  async createMenu(@Body() body: createMenuDto) {
-    return await this.menuService.createMenu(body);
+  async createMenu(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: createMenuDto,
+  ) {
+    return await this.menuService.createMenu(body, file);
   }
 
   @UseGuards(JwtGuard)

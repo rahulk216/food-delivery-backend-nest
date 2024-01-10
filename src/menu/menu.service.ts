@@ -5,6 +5,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { S3Service } from '../s3/s3.service';
+import { toKebabCase } from 'src/utility';
 
 interface createMenu {
   restaurantId: number;
@@ -50,10 +52,19 @@ interface updateRestaurant {
 
 @Injectable()
 export class MenuService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private s3Service: S3Service,
+  ) {}
 
   // Menu creating Api
-  async createMenu(body): Promise<any> {
+  async createMenu(body, file): Promise<any> {
+    const key = `menu-images/${toKebabCase(body.menu_name)}${Date.now()}`;
+    const imageUrl = await this.s3Service.uploadFile(file, key);
+    body.menu_img = imageUrl;
+    body.restaurantId = parseInt(body.restaurantId);
+    body.menu_rating = parseInt(body.menu_rating);
+
     const createdMenu = await this.prismaService.menu.create({
       data: body,
     });

@@ -24,6 +24,9 @@ export class createMenuDto {
 
   @IsBoolean()
   isVeg: boolean;
+
+  @IsBoolean()
+  topItem: boolean;
 }
 
 export class updateMenuDto {
