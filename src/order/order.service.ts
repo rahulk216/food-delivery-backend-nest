@@ -21,6 +21,9 @@ export class OrderService {
   async getOrderById(id: number) {
     const order = await this.prismaService.order.findUnique({
       where: { id },
+      include: {
+        user: true,
+      },
     });
 
     return order;
