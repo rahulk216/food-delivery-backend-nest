@@ -22,7 +22,14 @@ export class OrderService {
     const order = await this.prismaService.order.findUnique({
       where: { id },
       include: {
-        user: true,
+        user: {
+          select: {
+            name: true,
+            username: true,
+            email: true,
+            phone: true,
+          },
+        },
       },
     });
 
