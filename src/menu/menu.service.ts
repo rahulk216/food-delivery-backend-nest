@@ -87,6 +87,7 @@ export class MenuService {
   async readMenu(): Promise<any> {
     const menus = await this.prismaService.menu.findMany({
       include: {
+        restaurant: true,
         menuCategory: true,
       },
     });
