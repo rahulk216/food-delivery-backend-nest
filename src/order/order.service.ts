@@ -10,7 +10,20 @@ export class OrderService {
     const createdOrder = await this.prismaService.order.create({
       data: payload,
     });
-    return createdOrder;
+
+    const createdPayment = await this.prismaService.payment.create({
+      data: {
+        payment_status:
+          payload.order_type === 'CASH_ON_DELIVERY'
+            ? 'COD_PENDING'
+            : 'PROCESSING',
+        order: {
+          connect: { id: createdOrder.id },
+        },
+      },
+    });
+
+    return await this.getOrderById(createdOrder.id);
   }
 
   async getAllOrders() {
@@ -30,6 +43,7 @@ export class OrderService {
             phone: true,
           },
         },
+        payment: true,
       },
     });
 

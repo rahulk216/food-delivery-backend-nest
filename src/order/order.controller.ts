@@ -20,7 +20,6 @@ export class OrderController {
   @UseGuards(JwtGuard)
   @Post('/')
   async createOrder(@Body() body: createOrderDto) {
-    console.log(body);
     return this.orderService.createOrder(body);
   }
 
