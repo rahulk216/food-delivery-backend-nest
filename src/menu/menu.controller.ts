@@ -62,9 +62,13 @@ export class MenuController {
 
   // Restaurant controllers
   @UseGuards(JwtGuard)
+  @UseInterceptors(FileInterceptor('file'))
   @Post('/restaurant')
-  async createRestaurant(@Body() body: createRestaurantDto) {
-    return await this.menuService.createRestaurant(body);
+  async createRestaurant(
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body: createRestaurantDto,
+  ) {
+    return await this.menuService.createRestaurant(body, file);
   }
 
   @UseGuards(JwtGuard)

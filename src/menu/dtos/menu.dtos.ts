@@ -84,6 +84,9 @@ export class createRestaurantDto {
 
   @IsNumber()
   pincode: number;
+
+  @IsString()
+  image: string;
 }
 
 export class updateRestaurantDto {

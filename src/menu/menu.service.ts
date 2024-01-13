@@ -38,6 +38,7 @@ interface createRestaurant {
   state: string;
   city: string;
   pincode: number;
+  image: string;
 }
 
 interface updateRestaurant {
@@ -119,7 +120,13 @@ export class MenuService {
     return response;
   }
 
-  async createRestaurant(body: createRestaurant): Promise<any> {
+  async createRestaurant(body: createRestaurant, file): Promise<any> {
+    const key = `restaurant-images/${toKebabCase(
+      body.restaurant_name,
+    )}${Date.now()}`;
+    const imageUrl = await this.s3Service.uploadFile(file, key);
+    body.image = imageUrl;
+
     const createdRestaurant = await this.prismaService.restaurant.create({
       data: body,
     });
