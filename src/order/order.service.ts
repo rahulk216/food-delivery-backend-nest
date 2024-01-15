@@ -50,6 +50,24 @@ export class OrderService {
     return order;
   }
 
+  async getOrdersByUserId(id) {
+    const orders = await this.prismaService.order.findMany({
+      where: { userId: id },
+      include: {
+        user: {
+          select: {
+            name: true,
+            username: true,
+            email: true,
+            phone: true,
+          },
+        },
+        payment: true,
+      },
+    });
+    if (orders) return orders;
+  }
+
   async updateOrder(id: string, body) {
     console.log(id, body);
   }

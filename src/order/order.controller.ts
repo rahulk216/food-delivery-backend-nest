@@ -36,6 +36,12 @@ export class OrderController {
   }
 
   @UseGuards(JwtGuard)
+  @Get('/user/:userid')
+  async getOrdersByUserId(@Param('userid') id: number) {
+    return this.orderService.getOrdersByUserId(id);
+  }
+
+  @UseGuards(JwtGuard)
   @Put('/:id')
   async updateOrder(@Param('id') id: string, @Body() body) {
     return this.orderService.updateOrder(id, body);
