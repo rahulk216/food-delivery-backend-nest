@@ -6,7 +6,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { NotFoundError } from 'rxjs';
 
 interface SigninParams {
   email: string;
@@ -19,6 +18,7 @@ interface SignupParams {
   name: string;
   phone: string;
   username: string;
+  image?: string;
 }
 
 @Injectable()
@@ -81,6 +81,7 @@ export class AuthService {
         name,
         username,
         phone,
+        image: '',
       },
     });
     // const token = await generateJWT(name, user.id, UserType.ADMIN);
