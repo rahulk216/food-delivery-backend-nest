@@ -99,7 +99,7 @@ export class MenuController {
   }
 
   @UseGuards(JwtGuard)
-  @Delete('/error')
+  @Delete('/error/:id')
   async show500Error(@Param('id') id: number) {
     return await this.menuService.show500Error(id);
   }
