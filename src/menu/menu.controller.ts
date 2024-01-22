@@ -97,4 +97,10 @@ export class MenuController {
   async deleteRestaurant(@Param('id') id: number) {
     return await this.menuService.deleteRestaurant(id);
   }
+
+  @UseGuards(JwtGuard)
+  @Delete('/error')
+  async show500Error(@Param('id') id: number) {
+    return await this.menuService.show500Error(id);
+  }
 }

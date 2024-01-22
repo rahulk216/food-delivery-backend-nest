@@ -2,6 +2,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -92,7 +93,7 @@ export class MenuService {
         menuCategory: true,
       },
     });
-    if (!menus) throw new NotFoundException('');
+    if (menus) throw new NotFoundException('');
     return menus;
   }
 
@@ -172,6 +173,16 @@ export class MenuService {
     if (!response) {
       throw new NotFoundException('Restaurant not found');
     }
+
+    return response;
+  }
+
+  async show500Error(id: number): Promise<any> {
+    const response = await this.prismaService.restaurant.findUnique({
+      where: { id },
+    });
+
+    throw new InternalServerErrorException();
 
     return response;
   }
