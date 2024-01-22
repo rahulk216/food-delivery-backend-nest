@@ -17,6 +17,7 @@ model User {
   email    String    @unique
   password String
   phone    String
+  image    String
   address  Address[]
   order    Order[]
 }
@@ -40,6 +41,7 @@ model Restaurant {
   state              String
   city               String
   pincode            Int
+  image              String
   menu               Menu[]
 }
 
@@ -52,8 +54,10 @@ model Menu {
   menu_rating      Int
   menu_price       Decimal?      @db.Decimal(10, 2)
   menu_description String
-  MenuCategory     MenuCategory? @relation(fields: [menuCategoryId], references: [id])
+  menuCategory     MenuCategory? @relation(fields: [menuCategoryId], references: [id])
   menuCategoryId   Int?
+  isVeg            Boolean
+  topItem          Boolean
 }
 
 model MenuCategory {
@@ -68,9 +72,11 @@ model Order {
   userId          Int
   order_total     Decimal?        @db.Decimal(10, 2)
   delivery_status DELIVERY_STATUS
-  payment_id      Int
-  Payment         Payment?
+  order_items     String
+  payment_id      Int?
+  payment         Payment?
   order_type      ORDER_TYPE
+  address         Json
 }
 
 model Payment {
@@ -84,6 +90,8 @@ enum PAYMENT_STATUS {
   SUCCESS
   FAILED
   PROCESSING
+  COD_PENDING
+  COD_COMPLETE
 }
 
 enum DELIVERY_STATUS {

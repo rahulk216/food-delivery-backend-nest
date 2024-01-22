@@ -13,3 +13,7 @@ export function generateJWT(name: string, id: number, role: string) {
     },
   );
 }
+
+export function toKebabCase(str) {
+  return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
+}

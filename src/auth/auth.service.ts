@@ -1,6 +1,10 @@
 import { PrismaService } from './../prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 interface SigninParams {
@@ -14,6 +18,7 @@ interface SignupParams {
   name: string;
   phone: string;
   username: string;
+  image?: string;
 }
 
 @Injectable()
@@ -22,6 +27,17 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private jwtService: JwtService,
   ) {}
+
+  async getCurrentUser(body) {
+    if (!body.token) throw new NotFoundException();
+    const user = this.jwtService.decode(body.token);
+    if (!user) throw new NotFoundException();
+    const { password, ...result } = await this.prismaService.user.findUnique({
+      where: { username: user.sub.user.username },
+      include: { address: true },
+    });
+    return result;
+  }
 
   async validateUser(username: string, password: string) {
     const user = await this.prismaService.user.findUnique({
@@ -38,11 +54,10 @@ export class AuthService {
     const payload = {
       username: user.email,
       sub: {
-        name: user.name,
+        user,
       },
     };
     return {
-      ...user,
       accessToken: this.jwtService.sign(payload),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
@@ -66,6 +81,7 @@ export class AuthService {
         name,
         username,
         phone,
+        image: '',
       },
     });
     // const token = await generateJWT(name, user.id, UserType.ADMIN);
@@ -80,7 +96,7 @@ export class AuthService {
     const payload = {
       username: user.email,
       sub: {
-        name: user.name,
+        user,
       },
     };
 
